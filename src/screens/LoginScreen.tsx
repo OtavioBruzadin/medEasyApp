@@ -50,6 +50,7 @@ export default function LoginScreen({ navigation }: Props) {
 
       <TextInput
         placeholder="Email"
+        placeholderTextColor="#000"
         value={email}
         onChangeText={setEmail}
         style={styles.input}
@@ -59,6 +60,7 @@ export default function LoginScreen({ navigation }: Props) {
 
       <TextInput
         placeholder="Senha"
+        placeholderTextColor="#000"
         value={password}
         onChangeText={setPassword}
         secureTextEntry

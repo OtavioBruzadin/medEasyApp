@@ -1,4 +1,6 @@
-const API_URL = 'http://100.53.91.123:30080';
+// Durante o desenvolvimento em um celular USB, o ADB encaminha esta porta
+// para a API Spring Boot que está rodando no computador.
+const API_URL = 'http://127.0.0.1:8090';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 

@@ -9,12 +9,16 @@ import RegisterScreen from '../screens/RegisterScreen';
 import HomeScreen from '../screens/HomeScreen';
 import AddExamScreen from '../screens/AddExamScreen';
 import ExamDetailsScreen from '../screens/ExamDetailsScreen';
+import BluetoothScreen from '../screens/BluetoothScreen';
+import ExamsScreen from '../screens/ExamsScreen';
 
 export type AuthStackParamList = {
   Login: undefined;
   Register: undefined;
   Home: undefined;
   AddExam: undefined;
+  Bluetooth: undefined;
+  Exams: undefined;
   ExamDetails: {
     exame: any;
   };
@@ -43,8 +47,10 @@ export default function AuthNavigator() {
       <Stack.Navigator initialRouteName={initialRoute}>
         <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
         <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Cadastro' }} />
-        <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Exames' }} />
+        <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Menu principal', headerBackVisible: false }} />
+        <Stack.Screen name="Exams" component={ExamsScreen} options={{ title: 'Exames' }} />
         <Stack.Screen name="AddExam" component={AddExamScreen} options={{ title: 'Adicionar exame' }} />
+        <Stack.Screen name="Bluetooth" component={BluetoothScreen} options={{ title: 'Aferir' }} />
         <Stack.Screen name="ExamDetails" component={ExamDetailsScreen} options={{ title: 'Detalhes do exame' }} />
       </Stack.Navigator>
     </NavigationContainer>
