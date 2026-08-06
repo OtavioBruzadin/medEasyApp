@@ -102,7 +102,7 @@ export default function BluetoothScreen({ navigation }: any) {
       return;
     }
     const updated = currentFields.map((field, position) =>
-      position === index ? { ...field, value: captured.percent } : field
+      position === index ? { ...field, value: captured.angle } : field
     );
     fieldsRef.current = updated;
     setFields(updated);
@@ -170,7 +170,7 @@ export default function BluetoothScreen({ navigation }: any) {
       {step === 'measurements' && measurement && (
         <View style={styles.measurementCard}>
           <Text style={styles.label}>Medição em tempo real</Text>
-          <Text style={styles.percentage}>{measurement.percent}%</Text>
+          <Text style={styles.angle}>{measurement.angle.toFixed(1)}°</Text>
           <Text style={styles.voltage}>{measurement.voltage.toFixed(3)} V</Text>
         </View>
       )}
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   label: { fontSize: 14, color: '#607d8b', marginBottom: 6 },
   status: { fontSize: 20, fontWeight: '600', color: '#152238' },
   loader: { marginTop: 16 },
-  percentage: { fontSize: 52, fontWeight: 'bold', color: '#1565c0' },
+  angle: { fontSize: 52, fontWeight: 'bold', color: '#1565c0' },
   voltage: { fontSize: 20, color: '#37474f', marginTop: 4 },
   sectionTitle: { fontSize: 20, fontWeight: 'bold', color: '#152238', marginTop: 10, marginBottom: 12 },
   measureHelp: { color: '#52606d', lineHeight: 20, marginBottom: 12 },

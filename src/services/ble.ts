@@ -9,7 +9,7 @@ export const GONIOMETER_CAPTURE_UUID = '7f510003-1b15-4f8e-9a77-3c7b9e4d1000';
 
 export type GoniometerMeasurement = {
   voltage: number;
-  percent: number;
+  angle: number;
 };
 
 const manager = new BleManager();
@@ -106,13 +106,16 @@ export function monitorMeasurements(
       try {
         const decoded = decodeBase64(characteristic.value);
         const measurement = decoded.startsWith('{')
-          ? JSON.parse(decoded)
+          ? (() => {
+              const parsed = JSON.parse(decoded);
+              return { voltage: parsed.voltage, angle: parsed.angle ?? parsed.percent };
+            })()
           : (() => {
-              const [voltage, percent] = decoded.split(',').map(Number);
-              return { voltage, percent };
+              const [voltage, angle] = decoded.split(',').map(Number);
+              return { voltage, angle };
             })();
-        if (typeof measurement.voltage === 'number' && typeof measurement.percent === 'number') {
-          if (!Number.isFinite(measurement.voltage) || !Number.isFinite(measurement.percent)) {
+        if (typeof measurement.voltage === 'number' && typeof measurement.angle === 'number') {
+          if (!Number.isFinite(measurement.voltage) || !Number.isFinite(measurement.angle)) {
             throw new Error('Medição não numérica');
           }
           onMeasurement(measurement);
@@ -140,11 +143,11 @@ export function monitorCaptures(
       if (!characteristic?.value) return;
 
       try {
-        const [voltage, percent] = decodeBase64(characteristic.value).split(',').map(Number);
-        if (!Number.isFinite(voltage) || !Number.isFinite(percent)) {
+        const [voltage, angle] = decodeBase64(characteristic.value).split(',').map(Number);
+        if (!Number.isFinite(voltage) || !Number.isFinite(angle)) {
           throw new Error('Medição não numérica');
         }
-        onCapture({ voltage, percent });
+        onCapture({ voltage, angle });
       } catch {
         onError('O dispositivo enviou uma captura inválida.');
       }

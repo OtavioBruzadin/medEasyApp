@@ -3,6 +3,28 @@
 const API_URL = 'http://127.0.0.1:8090';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+async function readJsonResponse(response: Response): Promise<any> {
+  const body = await response.text();
+  if (!body.trim()) return null;
+
+  try {
+    return JSON.parse(body);
+  } catch {
+    throw new Error(`A API respondeu em um formato inválido (HTTP ${response.status}).`);
+  }
+}
+
+async function requireAuthenticatedResponse(response: Response): Promise<any> {
+  const data = await readJsonResponse(response);
+  if (response.status === 401 || response.status === 403) {
+    await AsyncStorage.removeItem('accessToken');
+    throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+  }
+  if (!response.ok) {
+    throw new Error(data?.message || `Erro na API (HTTP ${response.status}).`);
+  }
+  return data;
+}
 
 
 export async function login(email: string, password: string) {
@@ -17,7 +39,7 @@ export async function login(email: string, password: string) {
     })
   });
 
-  const data = await response.json();
+  const data = await readJsonResponse(response);
 
   if (!response.ok) {
     throw new Error(data.message || 'Login failed');
@@ -43,7 +65,7 @@ export async function signup(
     })
   });
 
-  const data = await response.json();
+  const data = await readJsonResponse(response);
 
   if (!response.ok) {
     throw new Error(data.message || 'Signup failed');
@@ -62,9 +84,7 @@ export async function getExames() {
     }
   });
 
-  const data = await response.json();
-
-  return data;
+  return requireAuthenticatedResponse(response);
 }
 
 export async function createExame(exame: {
@@ -85,11 +105,5 @@ export async function createExame(exame: {
     body: JSON.stringify(exame)
   });
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || 'Erro ao criar exame');
-  }
-
-  return data;
+  return requireAuthenticatedResponse(response);
 }
